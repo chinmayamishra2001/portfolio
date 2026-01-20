@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chinmaya Mishra | Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 1. CORE STYLES & THEME VARIABLES --- */
+        :root {
+            /* DEFAULT (DARK MODE) - "VOID" THEME */
+            --bg: #050505;
+            --bg-secondary: #0a0a0a;
+            --text: #ffffff;
+            --text-muted: #888888;
+            --border: #333333;
+            --border-hover: #ffffff;
+            --accent: #ffffff; /* Pure white accent for monochrome look */
+            
+            /* Background Image (Dark Abstract Texture) */
+            --bg-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
+            --overlay-color: rgba(5, 5, 5, 0.92); /* Heavy overlay to keep it dark */
+            
+            /* Card Styles - Minimalist Borders */
+            --card-bg: rgba(10, 10, 10, 0.6);
+            --card-backdrop: blur(15px);
+            --card-shadow: 0 0 0 1px var(--border); /* Using shadow as border for smoother rendering */
+            
+            /* Navigation */
+            --nav-bg: rgba(5, 5, 5, 0.8);
+            
+            /* Cursor */
+            --cursor-color: #ffffff;
+            --cursor-outline: rgba(255, 255, 255, 0.3);
+        }
+
+        /* LIGHT MODE - "PAPER" THEME */
+        [data-theme="light"] {
+            --bg: #ffffff;
+            --bg-secondary: #f4f4f4;
+            --text: #000000;
+            --text-muted: #666666;
+            --border: #e0e0e0;
+            --border-hover: #000000;
+            --accent: #000000;
+            
+            /* Background Image (Light Marble/Paper) */
+            --bg-image: url('https://images.unsplash.com/photo-1516541196182-6bdb0516ed27?q=80&w=2564&auto=format&fit=crop');
+            --overlay-color: rgba(255, 255, 255, 0.9);
+            
+            /* Card Styles */
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-shadow: 0 0 0 1px var(--border);
+            
+            /* Navigation */
+            --nav-bg: rgba(255, 255, 255, 0.8);
+            
+            /* Cursor */
+            --cursor-color: #000000;
+            --cursor-outline: rgba(0, 0, 0, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            color: var(--text);
+            font-family: 'Manrope', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+            background-color: var(--bg);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            cursor: auto; 
+        }
+
+        /* --- 2. FIXED BACKGROUND LAYER --- */
+        .bg-fixed {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background-image: var(--bg-image);
+            background-size: cover;
+            background-position: center;
+            filter: grayscale(100%); /* Force B&W for images */
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: var(--overlay-color);
+            transition: background 0.5s ease;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* --- 3. CUSTOM CURSOR --- */
+        @media (hover: hover) and (pointer: fine) {
+            body { cursor: none; }
+            .cursor-dot, .cursor-outline {
+                position: fixed; top: 0; left: 0;
+                transform: translate(-50%, -50%);
+                border-radius: 50%; z-index: 9999;
+                pointer-events: none;
+            }
+            .cursor-dot { width: 6px; height: 6px; background-color: var(--cursor-color); }
+            .cursor-outline {
+                width: 40px; height: 40px;
+                border: 1px solid var(--cursor-outline);
+                transition: width 0.2s, height 0.2s, background-color 0.2s;
+            }
+            body.hovering .cursor-outline {
+                width: 70px; height: 70px;
+                background-color: var(--text); /* Invert effect */
+                mix-blend-mode: difference;
+                border-color: transparent;
+            }
+        }
+        @media (hover: none) { .cursor-dot, .cursor-outline { display: none; } }
+
+        /* --- 4. NAVIGATION --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 30px 60px;
+            position: fixed; width: 100%; top: 0; z-index: 100;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo { 
+            font-size: 1.4rem; 
+            letter-spacing: -0.5px; 
+            font-weight: 800; 
+            text-transform: uppercase;
+        }
+        .logo span { font-weight: 300; }
+        
+        .nav-right { display: flex; align-items: center; gap: 40px; }
+        .menu-link { 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            transition: 0.3s;
+        }
+        .menu-link:hover { color: var(--text); }
+
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s;
+        }
+        .theme-toggle:hover { border-color: var(--text); background: var(--text); color: var(--bg); }
+        .theme-toggle svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+        /* --- 5. HERO SECTION --- */
+        .hero {
+            min-height: 90vh; 
+            display: flex; flex-direction: column; justify-content: center;
+            padding: 120px 60px 0; 
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 9vw, 8rem); 
+            font-weight: 800; line-height: 1;
+            letter-spacing: -0.04em;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, var(--text), var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeUp 1s ease forwards 0.3s; opacity: 0; transform: translateY(30px);
+        }
+
+        .hero p {
+            color: var(--text-muted); 
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            max-width: 550px;
+            border-left: 2px solid var(--accent);
+            padding-left: 20px;
+            animation: fadeUp 1s ease forwards 0.6s; opacity: 0; transform: translateY(30px);
+        }
+
+        .scroll-down {
+            position: absolute; bottom: 40px; left: 60px;
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--text-muted);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .scroll-down::after { content: ''; width: 40px; height: 1px; background: var(--border); }
+
+        /* --- 6. PROJECTS --- */
+        .section-label {
+            padding: 0 60px; font-size: 0.8rem; text-transform: uppercase;
+            letter-spacing: 2px; color: var(--text-muted); margin-bottom: 40px;
+            display: flex; align-items: center; gap: 15px; margin-top: 100px;
+        }
+        .section-label::before { content: ''; width: 10px; height: 10px; background: var(--accent); }
+
+        .project-list { padding: 0 60px 100px; }
+
+        .project {
+            position: relative;
+            padding: 50px 0;
+            border-top: 1px solid var(--border);
+            display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px;
+            transition: 0.4s ease;
+            background: transparent;
+        }
+
+        .project:last-child { border-bottom: 1px solid var(--border); }
+
+        .project:hover {
+            background: rgba(255,255,255,0.02);
+        }
+        .project:hover .project-title { padding-left: 20px; }
+        .project:hover .project-img { opacity: 1; filter: grayscale(100%) contrast(1.2); }
+
+        .project-info { z-index: 2; display: flex; flex-direction: column; justify-content: center; }
+        
+        .project-year { 
+            font-size: 0.8rem; font-family: monospace; 
+            color: var(--accent); margin-bottom: 15px; 
+            border: 1px solid var(--border); display: inline-block;
+            width: fit-content; padding: 2px 8px; border-radius: 4px;
+        }
+        
+        .project-title { 
+            font-size: clamp(2rem, 4vw, 3.5rem); 
+            font-weight: 600; 
+            transition: 0.3s ease; 
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+        
+        .project-desc {
+            color: var(--text-muted); font-size: 1rem; max-width: 450px; margin-bottom: 30px;
+        }
+
+        .project-tags { display: flex; gap: 10px; flex-wrap: wrap; }
+        .tag { 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            border: 1px solid var(--border); 
+            padding: 8px 16px; 
+            color: var(--text-muted);
+            transition: 0.3s;
+        }
+        .project:hover .tag { border-color: var(--text); color: var(--text); }
+
+        .project-img-wrapper {
+            position: relative; width: 100%; height: 350px;
+            overflow: hidden; border-radius: 4px;
+        }
+
+        .project-img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0.4;
+            filter: grayscale(100%);
+            transition: 0.5s ease;
+        }
+
+        /* --- 7. ABOUT GRID --- */
+        .about-section {
+            padding: 100px 60px;
+            border-top: 1px solid var(--border);
+            display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+            background: var(--bg-secondary);
+        }
+        
+        .big-statement { 
+            font-size: clamp(1.5rem, 3vw, 2.5rem); 
+            font-weight: 300; line-height: 1.4; 
+        }
+        .big-statement strong { font-weight: 800; color: var(--text); }
+
+        .tech-list { display: flex; flex-direction: column; gap: 0; }
+        .tech-item { 
+            display: flex; justify-content: space-between; 
+            padding: 20px 0; 
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .tech-item span { color: var(--text); font-weight: 600; text-align: right; }
+
+        /* --- 8. FOOTER --- */
+        footer {
+            padding: 120px 60px 60px; text-align: center;
+            border-top: 1px solid var(--border);
+        }
+        .footer-cta {
+            font-size: clamp(3rem, 10vw, 6rem); font-weight: 800;
+            display: block; margin-bottom: 60px;
+            color: var(--text); 
+            transition: 0.3s;
+        }
+        .footer-cta:hover { color: var(--text-muted); transform: scale(0.98); }
+
+        .social-container {
+            display: flex; justify-content: center; gap: 40px;
+            margin-bottom: 60px;
+        }
+        .social-link {
+            font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;
+            position: relative; color: var(--text-muted);
+        }
+        .social-link::after { 
+            content: ''; position: absolute; bottom: -5px; left: 0; 
+            width: 0; height: 1px; background: var(--text); transition: 0.3s; 
+        }
+        .social-link:hover { color: var(--text); }
+        .social-link:hover::after { width: 100%; }
+
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* RESPONSIVE */
+        @media(max-width: 1024px) {
+            nav, .hero, .project-list, .section-label, .about-section, footer { padding-left: 30px; padding-right: 30px; }
+            .project { grid-template-columns: 1fr; gap: 30px; }
+            .project-img-wrapper { height: 250px; order: -1; }
+            .project-img { opacity: 0.6; }
+        }
+
+        @media(max-width: 768px) {
+            .nav-right a { display: none; } /* Hide links on mobile, keep toggle */
+            .logo { font-size: 1.2rem; }
+            .hero h1 { font-size: 3rem; }
+            .about-section { grid-template-columns: 1fr; gap: 40px; }
+            .project { padding: 40px 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-fixed"></div>
+    <div class="bg-overlay"></div>
+
+    <div class="cursor-dot" data-cursor-dot></div>
+    <div class="cursor-outline" data-cursor-outline></div>
+
+    <nav>
+        <div class="logo">
+            Chinmaya<span>Mishra.</span>
+        </div>
+        
+        <div class="nav-right">
+            <a href="#work" class="menu-link hover-trigger">Work</a>
+            <a href="#about" class="menu-link hover-trigger">Expertise</a>
+            <a href="mailto:chinmaya.mishra@bqubeglobal.com" class="menu-link hover-trigger">Contact</a>
+            
+            <button id="theme-btn" class="theme-toggle hover-trigger" aria-label="Toggle Theme">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>BUILDING<br>DIGITAL INTELLIGENCE.</h1>
+        <p>AI Architect & RPA Developer. I bridge the gap between human intent and machine execution with precision code.</p>
+        <div class="scroll-down">Scroll</div>
+    </section>
+
+    <div id="work">
+        <div class="section-label">Selected Projects</div>
+        
+        <div class="project-list">
+            
+            <a href="#" class="project hover-trigger">
+                <div class="project-info">
+                    <div class="project-year">2025</div>
+                    <div class="project-title">TMS Orchestrator</div>
+                    <p class="project-desc">Autonomous Travel Management using <b>Agentic AI</b> & Prompt Engines. Handles Darwinbox ingestion, fare optimization, and financial reconciliation.</p>
+                    <div class="project-tags">
+                        <div class="tag">Python</div>
+                        <div class="tag">RPA</div>
+                        <div class="tag">LLM</div>
+                    </div>
+                </div>
+                <div class="project-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1485470733090-0aae1788d5af?auto=format&fit=crop&q=80&w=600" class="project-img" alt="TMS Project">
+                </div>
+            </a>
+
+            <a href="#" class="project hover-trigger">
+                <div class="project-info">
+                    <div class="project-year">2025</div>
+                    <div class="project-title">Finance Autopilot</div>
+                    <p class="project-desc">End-to-end invoice pipeline. Integrates ABBYY extraction directly into Epicor ERP.</p>
+                    <div class="project-tags">
+                        <div class="tag">Power Automate</div>
+                        <div class="tag">Epicor</div>
+                        <div class="tag">ABBYY</div>
+                    </div>
+                </div>
+                <div class="project-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&q=80&w=600" class="project-img" alt="Finance Project">
+                </div>
+            </a>
+
+            <a href="#" class="project hover-trigger">
+                <div class="project-info">
+                    <div class="project-year">2025</div>
+                    <div class="project-title">Agentic AI Core</div>
+                    <p class="project-desc">Autonomous Python agents executing complex reasoning and API calls via LangChain framework.</p>
+                    <div class="project-tags">
+                        <div class="tag">LangChain</div>
+                        <div class="tag">Python</div>
+                        <div class="tag">API</div>
+                    </div>
+                </div>
+                <div class="project-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1558494949-efc5e60dc3a0?auto=format&fit=crop&q=80&w=600" class="project-img" alt="AI Project">
+                </div>
+            </a>
+
+            <a href="#" class="project hover-trigger">
+                <div class="project-info">
+                    <div class="project-year">2025</div>
+                    <div class="project-title">HR Orchestrator</div>
+                    <p class="project-desc">Identity management automation linking Azure AD, Darwinbox, and Freshservice.</p>
+                    <div class="project-tags">
+                        <div class="tag">Azure AD</div>
+                        <div class="tag">Darwinbox</div>
+                        <div class="tag">Freshservice</div>
+                    </div>
+                </div>
+                <div class="project-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=600" class="project-img" alt="HR Project">
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <section id="about" class="about-section">
+        <div>
+            <div class="section-label" style="padding:0; margin-top:0;">The Philosophy</div>
+            <p class="big-statement">
+                I don't just write code; I <strong>design efficiency</strong>. <br><br>
+                My work exists at the intersection of rigid logic and fluid intelligence, creating systems that don't just function, but <em>adapt</em>.
+            </p>
+        </div>
+        <div>
+            <div class="tech-list">
+                <div class="tech-item">RPA Architecture <span>UiPath / Power Automate</span></div>
+                <div class="tech-item">Core Languages <span>Python / JavaScript</span></div>
+                <div class="tech-item">Artificial Intelligence <span>LLMs / RAG / Agents</span></div>
+                <div class="tech-item">Backend Engineering <span>Node.js / SQL</span></div>
+                <div class="tech-item">Integration <span>REST / GraphQL</span></div>
+                <div class="tech-item">DevOps <span>Git / Docker</span></div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;">Next Steps</p>
+        <a href="mailto:chinmaya.mishra@bqubeglobal.com" class="footer-cta hover-trigger">LET'S TALK.</a>
+        
+        <div class="social-container">
+            <a href="https://www.linkedin.com/in/chinmaya-mishra-4809b234a" target="_blank" class="social-link hover-trigger">LinkedIn</a>
+            <a href="https://www.instagram.com/not_chinmaya_" target="_blank" class="social-link hover-trigger">Instagram</a>
+            <a href="mailto:chinmaya.mishra@bqubeglobal.com" class="social-link hover-trigger">Email</a>
+        </div>
+
+        <div style="color: var(--border); font-size: 0.7rem; text-transform: uppercase;">
+            &copy; 2025 Chinmaya Mishra.
+        </div>
+    </footer>
+
+    <script>
+        // Cursor Logic
+        if (window.matchMedia("(hover: hover)").matches) {
+            const cursorDot = document.querySelector('[data-cursor-dot]');
+            const cursorOutline = document.querySelector('[data-cursor-outline]');
+            const hoverTriggers = document.querySelectorAll('.hover-trigger');
+
+            window.addEventListener('mousemove', function(e) {
+                const posX = e.clientX;
+                const posY = e.clientY;
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
+                cursorOutline.animate({
+                    left: `${posX}px`,
+                    top: `${posY}px`
+                }, { duration: 500, fill: "forwards" });
+            });
+
+            hoverTriggers.forEach(link => {
+                link.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+                link.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+            });
+        }
+
+        // Theme Toggle Logic
+        const themeBtn = document.getElementById('theme-btn');
+        const root = document.documentElement;
+        
+        themeBtn.addEventListener('click', () => {
+            const currentTheme = root.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            root.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Check Local Storage
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') root.setAttribute('data-theme', 'light');
+    </script>
+</body>
+</html>
